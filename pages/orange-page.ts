@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 
-// Interface para dados do candidato
+// Interface for candidate data
 export interface CandidateData {
     firstName: string;
     middleName: string;
@@ -8,11 +8,11 @@ export interface CandidateData {
     email: string;
 }
 
-//Export -> Torna a classe disponível para importação em outros arquivos
-//Class -> Implementação do padrão Page Object Model
+// Export -> Makes the class available for import in other files
+// Class -> Implementation of the Page Object Model pattern
 export class OrangePage {
-    private page: Page; //Tipo que representa uma instância de página do browser
-    //Locator: Tipo que representa um elemento ou conjunto de elementos na página
+    private page: Page; // Type that represents a browser page instance
+    // Locator: Type that represents an element or set of elements on the page
     private recruitmentOption: Locator;
     private buttonAdd: Locator;
     private addCandidateTitle: Locator;
@@ -25,8 +25,8 @@ export class OrangePage {
     private recruitmentCandidatesTitle: Locator;
     private savedUser: Locator;
 
-    constructor(page: Page) { //Método especial executado na instanciação
-        this.page = page; // Armazena referência da página
+    constructor(page: Page) { // Special method executed during instantiation
+        this.page = page; // Stores the page reference
         this.recruitmentOption = page.getByText('Recruitment');
         this.buttonAdd = page.getByText(' Add ');
         this.addCandidateTitle = page.getByRole('heading', { name: 'Add Candidate' });
@@ -38,10 +38,9 @@ export class OrangePage {
         this.successMessage = page.getByText('Success').first();
         this.recruitmentCandidatesTitle = page.getByRole('heading', { name: 'Candidates' });
         this.savedUser = page.getByRole('cell', { name: 'New candidate test' }).first();
-
-
     }
-    public async recruitementPage(): Promise<void> { //Retorna Promise que resolve sem valor
+
+    public async recruitementPage(): Promise<void> { // Returns a Promise that resolves with no value
         await this.recruitmentOption.click();
     }
 
@@ -50,8 +49,8 @@ export class OrangePage {
     }
 
     /**
-     * Preenche o formulário de novo candidato com dados parametrizados
-     * @param candidateData Objeto com os dados do candidato
+     * Fills out the new candidate form with parameterized data
+     * @param candidateData Object with the candidate's data
      */
     public async fillCandidateForm(candidateData: CandidateData): Promise<void> {
         await this.usernameField.fill(candidateData.firstName);
@@ -61,15 +60,15 @@ export class OrangePage {
     }
 
     /**
-     * Submete o formulário de candidato
+     * Submits the candidate form
      */
     public async submitCandidateForm(): Promise<void> {
         await this.save.click();
     }
 
     /**
-     * Método completo para criar novo candidato (compatibilidade)
-     * @param candidateData Dados do candidato
+     * Complete method to create a new candidate (compatibility)
+     * @param candidateData Candidate data
      */
     public async newCandidate(candidateData: CandidateData): Promise<void> {
         await this.fillCandidateForm(candidateData);
@@ -77,36 +76,39 @@ export class OrangePage {
     }
 
     /**
-     * Aguarda o formulário de adicionar candidato estar visível
+     * Waits for the add candidate form to be visible
      */
     public async waitForAddCandidateForm(): Promise<void> {
         await this.addCandidateTitle.waitFor({ state: 'visible' });
-    }    //Métodos Getter:
+    }
+
+    // Getter Methods:
 
     /**
-     * @returns Locator para o título de adicionar candidato
+     * @returns Locator for the add candidate title
      */
-    public addCandidateTitleValidation(): Locator /* Expõem os elementos para validação externa */ {
+    public addCandidateTitleValidation(): Locator /* Exposes elements for external validation */ {
         return this.addCandidateTitle;
     }
 
     /**
-     * @returns Locator para a mensagem de sucesso
+     * @returns Locator for the success message
      */
     public validateSuccessMessage(): Locator {
         return this.successMessage;
     }
+
     /**
-     * @returns Locator para o título da página de candidatos
+     * @returns Locator for the candidates page title
      */
     public viewRecruitmentCandidatesTitle(): Locator {
         return this.recruitmentCandidatesTitle;
     }
+
     /**
-     * @returns Locator para o usuário salvo na lista
+     * @returns Locator for the saved user in the list
      */
     public registerSavedUser(): Locator {
         return this.savedUser;
     }
-
 }

@@ -1,26 +1,27 @@
 import { test, expect } from '@playwright/test';
-//Classe Page Object Model (POM) que encapsula elementos e ações da página principal
+// Page Object Model (POM) class that encapsulates elements and actions of the main page
 import { OrangePage, CandidateData } from './../pages/orange-page';
-//Classe POM para operações de autenticação
+// POM class for authentication operations
 import { LoginPage } from '../pages/login-page';
 
-//Função que agrupa testes relacionados em uma suíte
-test.describe('OrangeHRM Tests', () => { //contexto isolado
+// Function that groups related tests into a suite
+test.describe('OrangeHRM Tests', () => { //isolated context
 
-    //Função executada antes de cada teste
-    test.beforeEach(async ({ page }) => { //{ page } -> Objeto page do contexto Playwright (destructuring)
-        //Create an object to use the login page
-        //Instanciação da classe POM com injeção da página
-        const loginPage = new LoginPage(page); //page -> Objeto de página para interação com browser
+    // Function executed before each test
+    test.beforeEach(async ({ page }) => { // { page } -> Page object from Playwright context (destructuring)
+        // Create an object to use the login page
+        // Instantiation of the POM class with page injection
+        const loginPage = new LoginPage(page); // page -> Page object for browser interaction
         await loginPage.login();
         await expect(page, "The login should be done and go to the Dashboard").toHaveTitle(/OrangeHRM/);
+    });
 
-    });    //Teste de integração para funcionalidade de cadastro de candidatos
+    // Integration test for candidate registration functionality
     test('Add new candidate', async ({ page }) => {
-        //Create an object to use the principal page 
+        // Create an object to use the main page
         const orangePage = new OrangePage(page);
 
-        // Dados do candidato para teste
+        // Candidate data for testing
         const candidateData: CandidateData = {
             firstName: 'New',
             middleName: 'candidate',
@@ -34,13 +35,13 @@ test.describe('OrangeHRM Tests', () => { //contexto isolado
         await expect(orangePage.addCandidateTitleValidation()).toBeVisible();
         await orangePage.newCandidate(candidateData);
         await expect(orangePage.validateSuccessMessage(), "Success message must be displayed").toBeVisible();
-
     });
+
+    // Test to verify the newly added candidate
     test('View new candidate added', async ({ page }) => {
         const orangePage = new OrangePage(page);
         await orangePage.recruitementPage();
         await expect(orangePage.viewRecruitmentCandidatesTitle()).toBeVisible();
         await expect(orangePage.registerSavedUser()).toBeVisible();
     });
-
 });
